@@ -1,3 +1,5 @@
+import { fetchRooms } from './fetchRooms.js';
+
 const fetchState = async (displayName, id) => {
   try {
     const before = Date.now();
@@ -59,17 +61,24 @@ const run = async () => {
     video.play();
   });
   
+  const { ok: roomsOk, error: roomsError, rooms } = await fetchRooms();
 
-  const displayName = params.get('name');
-  const id = params.get('id');
-
-  if (!displayName) {
-    throw new Error('Display Name not set');
+  if (!roomsOk) {
+    setTitleLabel({ error: roomsError });
+    return;
   }
+
+  const id = params.get('id');
   if (!id) {
     throw new Error('ID not set');
   }
 
+  const { name: displayName } = rooms.find(({ id: roomId }) => roomId === id) ?? {};
+
+  if (!displayName) {
+    throw new Error('Room not found');
+  }
+  
   const warningEl = document.getElementById('warning');
   const offlineEl = document.getElementById('offline');
   const roomNameEl = document.getElementById('room-name');
