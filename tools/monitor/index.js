@@ -1,23 +1,23 @@
 import { castURI, fetchRooms, viewerURI } from './fetchRooms.js?v=12';
 
-export const createRoomLink = (within) => (destination, label) => {
-  const base = document.createElement('li');
+const createLink = (href, label) => {
   const link = document.createElement('a');
+  link.setAttribute('href', href);
+  link.innerText = label;
+  return link;
+}
 
-  link.setAttribute('href', destination);
-
-  const text = document.createTextNode(label);
-  link.appendChild(text);
-
-  base.appendChild(link);
-
+export const createRoomLink = (within) => (id, label) => {
+  const base = document.createElement('li');
+  base.appendChild(createLink(viewerURI(id), label));
+  base.appendChild(document.createTextNode(' ['));
+  base.appendChild(createLink(castURI(id), 'Cast'));
+  base.appendChild(document.createTextNode(']'));
   within.append(base);
 };
 
 
 const run = async () => {
-  console.log('hi');
-
   const roomList = document.getElementById('room-list');
   const roomLink = createRoomLink(roomList);
 
@@ -28,11 +28,7 @@ const run = async () => {
   }
 
   for (const { id, name } of rooms) {
-    roomLink(viewerURI(id), name);
-  }
-
-  for (const { id, name } of rooms) {
-    roomLink(castURI(id), `Cast: ${name}`);
+    roomLink(id, name);
   }
 };
 
