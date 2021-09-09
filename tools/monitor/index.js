@@ -1,4 +1,4 @@
-import { castURI, fetchRooms, viewerURI } from './fetchRooms.js';
+import { castURI, fetchRooms, viewerURI } from './fetchRooms.js?v=12';
 
 export const createRoomLink = (within) => (destination, label) => {
   const base = document.createElement('li');
