@@ -17,3 +17,4 @@ export const fetchRooms = async () => {
 }
 
 export const viewerURI = (id) => `dynamic.html?id=${encodeURIComponent(id)}&v=${nanoid()}`;
+export const castURI = (id) => `cast.html?id=${encodeURIComponent(id)}&v=${nanoid()}`;

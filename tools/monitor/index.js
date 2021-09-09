@@ -1,4 +1,4 @@
-import { fetchRooms, viewerURI } from './fetchRooms.js';
+import { castURI, fetchRooms, viewerURI } from './fetchRooms.js';
 
 export const createRoomLink = (within) => (destination, label) => {
   const base = document.createElement('li');
@@ -29,6 +29,10 @@ const run = async () => {
 
   for (const { id, name } of rooms) {
     roomLink(viewerURI(id), name);
+  }
+
+  for (const { id, name } of rooms) {
+    roomLink(castURI(id), `Cast: ${name}`);
   }
 };
 
