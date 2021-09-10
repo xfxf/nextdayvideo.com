@@ -1,4 +1,4 @@
-import { fetchRooms, viewerURI } from './fetchRooms.js';
+import { fetchRooms, viewerURI } from './fetchRooms.js?v=13';
 
 export const createStreamIframe = (within) => (id, destination, style) => {
   const base = document.createElement('iframe');
@@ -12,8 +12,8 @@ export const createStreamIframe = (within) => (id, destination, style) => {
 
 const roomLayouts = {
   2: [
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; bottom: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; right: 0; bottom: 0;',
+    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; top: 25%;',
+    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; right: 0; top: 25%;',
   ],
   3: [
     'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; top: 0;',
