@@ -1,4 +1,4 @@
-import { fetchRooms } from './fetchRooms.js';
+import { fetchRooms } from './fetchRooms.js?v=13';
 
 const fetchState = async (displayName, id) => {
   try {
