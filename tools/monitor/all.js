@@ -1,17 +1,17 @@
-import { createStreamIframe } from './js/createStreamIframe.js?v=16';
-import { fetchRooms, viewerURI } from './fetchRooms.js?v=16';
-import { roomLayouts } from './js/roomLayouts.js?v=16';
-import { wait } from './wait.js?v=16';
-import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=16';
-import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=16';
-import { createNextPrevious } from './js/createNextPrevious.js?v=16';
+import { createStreamIframe } from './js/createStreamIframe.js?v=17';
+import { fetchRooms, viewerURI } from './fetchRooms.js?v=17';
+import { roomLayouts } from './js/roomLayouts.js?v=17';
+import { wait } from './wait.js?v=17';
+import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=17';
+import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=17';
+import { createNextPrevious } from './js/createNextPrevious.js?v=17';
 
 const createFocusAudio = (muteFunctions) => {
   const count = muteFunctions.length;
   
   return (focussed) => {
     for (let index = 0; index < count; ++index) {
-      muteFunctions[index](index === focussed);
+      muteFunctions[index](index === focussed ? 1 : 0);
     }
   };
 };
@@ -22,8 +22,8 @@ const createAudioController = (streamFrames, speed) => async () => {
 
     const setGain = frame.contentWindow.setupAudioMeterForMultiview();
 
-    return (mute) => {
-      setGain(mute ? 0 : 1);
+    return (volume) => {
+      setGain(volume);
     };
   });
 
