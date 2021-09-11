@@ -1,5 +1,5 @@
-import { fetchRooms } from './fetchRooms.js?v=14';
-import { wait } from './wait.js?v=14';
+import { fetchRooms } from './fetchRooms.js?v=15';
+import { wait } from './wait.js?v=15';
 
 const fetchState = async (displayName, id) => {
   try {
