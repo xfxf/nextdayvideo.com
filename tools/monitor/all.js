@@ -1,10 +1,10 @@
-import { createStreamIframe } from './js/createStreamIframe.js?v=17';
-import { fetchRooms, viewerURI } from './fetchRooms.js?v=17';
-import { roomLayouts } from './js/roomLayouts.js?v=17';
-import { wait } from './wait.js?v=17';
-import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=17';
-import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=17';
-import { createNextPrevious } from './js/createNextPrevious.js?v=17';
+import { createStreamIframe } from './js/createStreamIframe.js?v=18';
+import { fetchRooms, viewerURI } from './fetchRooms.js?v=18';
+import { roomLayouts } from './js/roomLayouts.js?v=18';
+import { wait } from './wait.js?v=18';
+import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=18';
+import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=18';
+import { createNextPrevious } from './js/createNextPrevious.js?v=18';
 
 const createFocusAudio = (muteFunctions) => {
   const count = muteFunctions.length;

@@ -65,10 +65,18 @@ body {
   border-radius: 0.5em;
 }
 
+.unmuted #room-name {
+  background-color: red;
+}
+
 #warning {
   left: inherit;
   right: 20px;
   background-color: #666666;
+}
+
+.show-vu-meter #warning {
+  right: 80px;
 }
 
 #offline {
@@ -148,23 +156,36 @@ video {
   background-color: black;
 }
 
-video.show-vu-meter {
-  width: calc(100% - 61px);
+.show-vu-meter video {
+  width: calc(100% - 62px);
 }
 
 video.unmuted {
   margin: 0;
-  border: 1px solid red;
+  border-left: 1px solid red;
   border-top: 10px solid red;
   border-bottom: 10px solid red;
-  background-color: red;
 }
 
-#vu-meter.show-vu-meter {
+#vu-meter {
+  display: none;
+}
+
+.show-vu-meter #vu-meter {
+  display: block;
   position: absolute;
-  right: 0;
+  right: 0px;
   bottom: 0;
   background-color: blue;
   width: 60px;
-  height: 100%;
+  top: 0;
+  border-right: 1px solid black;
+  border-top: 10px solid black;
+  border-bottom: 10px solid black;
+}
+
+.show-vu-meter.unmuted #vu-meter {
+  border-right: 1px solid red;
+  border-top: 10px solid red;
+  border-bottom: 10px solid red;
 }
