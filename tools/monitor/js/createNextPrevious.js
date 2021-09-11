@@ -1,4 +1,4 @@
-import { createMaterialIcon } from './createMaterialIcon.js?v=17';
+import { createMaterialIcon } from './createMaterialIcon.js?v=18';
 
 export const createNextPrevious = (within, className, title, icon, eventHandler) => {
   const base = document.createElement('button');

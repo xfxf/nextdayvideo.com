@@ -1,4 +1,4 @@
-import { createMaterialIcon } from './createMaterialIcon.js?v=17';
+import { createMaterialIcon } from './createMaterialIcon.js?v=18';
 
 export const createStartAudioHopper = (within, rotateAudio) => {
   const base = document.createElement('button');

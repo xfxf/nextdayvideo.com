@@ -1,5 +1,5 @@
-import { fetchRooms } from './fetchRooms.js?v=17';
-import { wait } from './wait.js?v=17';
+import { fetchRooms } from './fetchRooms.js?v=18';
+import { wait } from './wait.js?v=18';
 
 const fetchState = async (displayName, id) => {
   try {
@@ -31,10 +31,9 @@ const createSetTitleLabel = (el, room) => ({ loading = false, live = false, erro
   el.textContent = `${room}${description}`;
 }
 
-const mountSetupAudioMeterForMultiview = (videoTag, myMeterElement) => {
+const mountSetupAudioMeterForMultiview = (videoTag, myMeterElement, body) => {
   window.setupAudioMeterForMultiview = () =>  {
-    videoTag.classList.add('show-vu-meter');
-    myMeterElement.classList.add('show-vu-meter');
+    body.classList.add('show-vu-meter');
 
     const audioCtx = new window.AudioContext();
     const sourceNode = audioCtx.createMediaElementSource(videoTag);
@@ -58,8 +57,10 @@ const mountSetupAudioMeterForMultiview = (videoTag, myMeterElement) => {
       gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
 
       if (volume === 0) {
+        body.classList.remove('unmuted');
         videoTag.classList.remove('unmuted');
       } else {
+        body.classList.add('unmuted');
         videoTag.classList.add('unmuted');
       }
     }
@@ -74,7 +75,7 @@ const run = async () => {
   const video = document.getElementById('azuremediaplayer');
   const vuMeter = document.getElementById('vu-meter');
 
-  mountSetupAudioMeterForMultiview(video, vuMeter);
+  mountSetupAudioMeterForMultiview(video, vuMeter, document.body);
 
   const params = (new URL(location.href)).searchParams;
   const hlsDebug = params.get('hlsdebug') === 'true';
