@@ -148,10 +148,23 @@ video {
   background-color: black;
 }
 
+video.show-vu-meter {
+  width: calc(100% - 61px);
+}
+
 video.unmuted {
   margin: 0;
   border: 1px solid red;
   border-top: 10px solid red;
   border-bottom: 10px solid red;
   background-color: red;
+}
+
+#vu-meter.show-vu-meter {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: blue;
+  width: 60px;
+  height: 100%;
 }

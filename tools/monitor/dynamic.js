@@ -1,5 +1,5 @@
-import { fetchRooms } from './fetchRooms.js?v=15';
-import { wait } from './wait.js?v=15';
+import { fetchRooms } from './fetchRooms.js?v=16';
+import { wait } from './wait.js?v=16';
 
 const fetchState = async (displayName, id) => {
   try {
@@ -31,12 +31,50 @@ const createSetTitleLabel = (el, room) => ({ loading = false, live = false, erro
   el.textContent = `${room}${description}`;
 }
 
+const mountSetupAudioMeterForMultiview = (videoTag, myMeterElement) => {
+  window.setupAudioMeterForMultiview = () =>  {
+    videoTag.classList.add('show-vu-meter');
+    myMeterElement.classList.add('show-vu-meter');
+
+    const audioCtx = new window.AudioContext();
+    const sourceNode = audioCtx.createMediaElementSource(videoTag);
+
+    const gainNode = audioCtx.createGain();
+
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+
+    sourceNode.connect(gainNode);
+
+    gainNode.connect(audioCtx.destination);
+    
+
+    const meterNode = webAudioPeakMeter.createMeterNode(sourceNode, audioCtx, { peakHoldDuration: 2000 });
+    
+    webAudioPeakMeter.createMeter(myMeterElement, meterNode, {});
+
+    audioCtx.resume();
+
+    return (volume) => {
+      gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+
+      if (volume === 0) {
+        videoTag.classList.add('unmuted');
+      } else {
+        videoTag.classList.remove('unmuted');
+      }
+    }
+  }
+};
+
 const run = async () => {
   if (!Hls.isSupported()) {
     alert('This multiview is only intended for use with hls.js, sorry');
   }
   
   const video = document.getElementById('azuremediaplayer');
+  const vuMeter = document.getElementById('vu-meter');
+
+  mountSetupAudioMeterForMultiview(video, vuMeter);
 
   const params = (new URL(location.href)).searchParams;
   const hlsDebug = params.get('hlsdebug') === 'true';

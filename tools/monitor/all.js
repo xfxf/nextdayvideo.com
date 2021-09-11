@@ -1,41 +1,39 @@
-import { createStreamIframe } from './js/createStreamIframe.js?v=15';
-import { fetchRooms, viewerURI } from './fetchRooms.js?v=15';
-import { roomLayouts } from './js/roomLayouts.js?v=15';
-import { wait } from './wait.js?v=15';
-import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=15';
-import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=15';
-import { createNextPrevious } from './js/createNextPrevious.js?v=15';
+import { createStreamIframe } from './js/createStreamIframe.js?v=16';
+import { fetchRooms, viewerURI } from './fetchRooms.js?v=16';
+import { roomLayouts } from './js/roomLayouts.js?v=16';
+import { wait } from './wait.js?v=16';
+import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=16';
+import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=16';
+import { createNextPrevious } from './js/createNextPrevious.js?v=16';
 
-const createFocusAudio = (streamFrames) => {
-  const count = streamFrames.length;
+const createFocusAudio = (muteFunctions) => {
+  const count = muteFunctions.length;
   
   return (focussed) => {
     for (let index = 0; index < count; ++index) {
-      try {
-        const videoTag = streamFrames[index].contentDocument.getElementsByTagName('video')[0];
-
-        videoTag.muted = index !== focussed;
-        if (index !== focussed) {
-          videoTag.classList.remove('unmuted');
-        } else {
-          videoTag.classList.add('unmuted');
-        }
-        // streamFrames[index].contentDocument.body.style.backgroundColor = index === focussed ? 'red' : '';
-      } catch (err) {
-        console.log(`[all] Could not mute/unmute ${index}: ${err.message}`);
-      }
+      muteFunctions[index](index === focussed);
     }
   };
 };
 
 const createAudioController = (streamFrames, speed) => async () => {
-  const focusAudio = createFocusAudio(streamFrames);
+  const muteFunctions = streamFrames.map((frame) => {
+    frame.contentDocument.getElementsByTagName('video')[0].muted = false;
+
+    const setGain = frame.contentWindow.setupAudioMeterForMultiview();
+
+    return (mute) => {
+      setGain(mute ? 0 : 1);
+    };
+  });
+
+  const focusAudio = createFocusAudio(muteFunctions);
 
   console.log('[all] beging rotating audio...');
 
   let paused = true;
   let nextChange = Date.now();
-  let count = streamFrames.length;
+  let count = muteFunctions.length;
   let current = 0;
 
   const move = (by) => {
