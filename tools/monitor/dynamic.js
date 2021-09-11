@@ -1,5 +1,5 @@
-import { fetchRooms } from './fetchRooms.js?v=16';
-import { wait } from './wait.js?v=16';
+import { fetchRooms } from './fetchRooms.js?v=17';
+import { wait } from './wait.js?v=17';
 
 const fetchState = async (displayName, id) => {
   try {
@@ -58,9 +58,9 @@ const mountSetupAudioMeterForMultiview = (videoTag, myMeterElement) => {
       gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
 
       if (volume === 0) {
-        videoTag.classList.add('unmuted');
-      } else {
         videoTag.classList.remove('unmuted');
+      } else {
+        videoTag.classList.add('unmuted');
       }
     }
   }
