@@ -1,140 +1,86 @@
-import { fetchRooms, viewerURI } from './fetchRooms.js?v=14';
-import { wait } from './wait.js?v=14';
+import { createStreamIframe } from './js/createStreamIframe.js?v=15';
+import { fetchRooms, viewerURI } from './fetchRooms.js?v=15';
+import { roomLayouts } from './js/roomLayouts.js?v=15';
+import { wait } from './wait.js?v=15';
+import { createPauseAudioHopper } from './js/createPauseAudioHopper.js?v=15';
+import { createStartAudioHopper } from './js/createStartAudioHopper.js?v=15';
+import { createNextPrevious } from './js/createNextPrevious.js?v=15';
 
-export const createStreamIframe = (within) => (id, destination, style) => {
-  const base = document.createElement('iframe');
+const createFocusAudio = (streamFrames) => {
+  const count = streamFrames.length;
+  
+  return (focussed) => {
+    for (let index = 0; index < count; ++index) {
+      try {
+        const videoTag = streamFrames[index].contentDocument.getElementsByTagName('video')[0];
 
-  base.setAttribute('src', destination);
-  base.setAttribute('style', style);
-  base.setAttribute('x-id', id);
-
-  within.append(base);
-
-  return base;
-};
-
-const createMaterialIcon = (text) => {
-  const base = document.createElement('span');
-  base.classList.add('material-icons');
-
-  base.appendChild(document.createTextNode(text));
-
-  return base;
-}
-
-const createPauseAudioHopper = (within, pauseHopper) => {
-  const base = document.createElement('button');
-
-  base.classList.add('pause-audio-hopper');
-
-  base.setAttribute('title', 'Pause/resume the rotation');
-
-  const repeat = createMaterialIcon('repeat');
-  const repeatOne = createMaterialIcon('repeat_one');
-
-  base.appendChild(repeat);
-
-  base.addEventListener('click', (ev) => {
-    console.log('[all] pause audio click... ');
-
-    if (pauseHopper()) {
-      base.removeChild(repeat);
-      base.appendChild(repeatOne);
-    } else {
-      base.removeChild(repeatOne);
-      base.appendChild(repeat);
-
+        videoTag.muted = index !== focussed;
+        if (index !== focussed) {
+          videoTag.classList.remove('unmuted');
+        } else {
+          videoTag.classList.add('unmuted');
+        }
+        // streamFrames[index].contentDocument.body.style.backgroundColor = index === focussed ? 'red' : '';
+      } catch (err) {
+        console.log(`[all] Could not mute/unmute ${index}: ${err.message}`);
+      }
     }
-
-    ev.preventDefault();
-    return false;
-  })
-
-  within.append(base);
-
-  return base;
-}
-
-const createStartAudioHopper = (within, rotateAudio) => {
-  const base = document.createElement('button');
-
-  base.classList.add('start-audio-hopper');
-
-  base.setAttribute('title', 'Volume Off - Click to enable audio hopper');
-
-  base.appendChild(createMaterialIcon('volume_off'));
-
-  base.addEventListener('click', (ev) => {
-    console.log('[all] rotate audio click... ');
-    rotateAudio();
-
-    ev.preventDefault();
-
-    base.parentNode.removeChild(base);
-
-    return false;
-  })
-
-  within.append(base);
-
-  return base;
+  };
 };
 
-const rotateAudio = (streamFrames, speed) => async () => {
+const createAudioController = (streamFrames, speed) => async () => {
+  const focusAudio = createFocusAudio(streamFrames);
 
   console.log('[all] beging rotating audio...');
 
-  let paused = false;
-
-  createPauseAudioHopper(document.body, () => {
-    paused = !paused;
-
-    return paused;
-  });
-
+  let paused = true;
+  let nextChange = Date.now();
   let count = streamFrames.length;
   let current = 0;
 
-  while (current < count) {
-    if (!paused) {
-      for (let o = 0; o < count; ++o) {
-        try {
-          streamFrames[o].contentDocument.getElementsByTagName('video')[0].muted = o !== current;
-          streamFrames[o].contentDocument.body.style.backgroundColor = o === current ? 'red' : '';
-        } catch (err) {
-          console.log(`[all] Could not mute/unmute ${o}: ${err.message}`);
-        }
-      }
-
-      if (current === count - 1) {
-        current = 0;
-      } else {
-        current++;
-      }
+  const move = (by) => {
+    if (current + by < 0) {
+      current = count - 1;
+    } else if (current + by >= count) {
+      current = 0;
+    } else {
+      current = current + by;
     }
 
-    await wait(speed);
-  }
+    focusAudio(current);
+  };
 
+  createNextPrevious(document.body, 'prev-audio-hopper', 'Previous', 'navigate_before', () => {
+    move(-1);
+  });
+
+  createNextPrevious(document.body, 'next-audio-hopper', 'Next', 'navigate_next', () => {
+    move(1);
+  });
+
+  createPauseAudioHopper(document.body, paused, (updateButton) => {
+    paused = !paused;
+    
+    nextChange = Date.now();
+
+    updateButton(paused);
+  });
+
+  focusAudio(current);
+
+  do {
+    if (Date.now() < nextChange) {
+      // Do nothing      
+    } else if (!paused) {
+      move(1);
+
+      nextChange = Date.now() + speed;
+    }
+
+    await wait(1000/60);
+
+  } while(true);
 }
-
-const roomLayouts = {
-  2: [
-    'width: calc(50% - 1px); height: calc(100% - 50px); position: absolute; left: 0; top: 0px;',
-    'width: calc(50% - 1px); height: calc(100% - 50px); position: absolute; right: 0; top: 0px;',
-  ],
-  3: [
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; top: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; right: 0; top: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 25%; bottom: 0;',
-  ],
-  4: [
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; top: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; right: 0; top: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; left: 0; bottom: 0;',
-    'width: calc(50% - 1px); height: calc(50% - 1px); position: absolute; right: 0; bottom: 0;',
-  ]
-};
 
 const run = async () => {
   console.log('hi');
@@ -157,7 +103,7 @@ const run = async () => {
 
   let params = new URLSearchParams(location.search.slice(1));
 
-  let rotateSpeed = 5;
+  let rotateSpeed = 30;
 
   if (params.has('audio-hopper')) {
     rotateSpeed = parseInt(params.get('audio-hopper'), 10);
@@ -167,7 +113,7 @@ const run = async () => {
     }
   }
 
-  createStartAudioHopper(document.body, rotateAudio(streamFrames, rotateSpeed * 1000));
+  createStartAudioHopper(document.body, createAudioController(streamFrames, rotateSpeed * 1000));
 };
 
 run().catch(err => console.error('Failed somewhere', err));

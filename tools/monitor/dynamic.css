@@ -71,12 +71,6 @@ body {
   background-color: #666666;
 }
 
-#azuremediaplayer {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-}
-
 #offline {
   position: absolute;
   top: 80px;
@@ -119,7 +113,7 @@ a {
   color: #ffffff;
 }
 
-.start-audio-hopper, .pause-audio-hopper {
+.start-audio-hopper, .pause-audio-hopper, .next-audio-hopper, .prev-audio-hopper {
   position: absolute;
   bottom: 5px;
   right: 5px;
@@ -129,4 +123,35 @@ a {
   color: #ffffff;
   cursor: pointer;
   padding: 10px;
+}
+
+.next-audio-hopper {
+  right: 60px;
+}
+
+.prev-audio-hopper {
+  right: 120px;
+}
+
+.start-audio-hopper:active, .pause-audio-hopper:active, .next-audio-hopper:active, .prev-audio-hopper:active {
+  background-color: #333333;
+}
+
+video {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 1px;
+  margin-right: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 20px);
+  position: absolute;
+  background-color: black;
+}
+
+video.unmuted {
+  margin: 0;
+  border: 1px solid red;
+  border-top: 10px solid red;
+  border-bottom: 10px solid red;
+  background-color: red;
 }

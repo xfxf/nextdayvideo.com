@@ -1,4 +1,4 @@
-import { castURI, fetchRooms, viewerURI } from './fetchRooms.js?v=14';
+import { castURI, fetchRooms, viewerURI } from './fetchRooms.js?v=15';
 
 const createLink = (href, label) => {
   const link = document.createElement('a');
