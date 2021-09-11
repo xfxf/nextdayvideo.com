@@ -1,4 +1,5 @@
-import { fetchRooms } from './fetchRooms.js?v=13';
+import { fetchRooms } from './fetchRooms.js?v=14';
+import { wait } from './wait.js?v=14';
 
 const fetchState = async (displayName, id) => {
   try {
@@ -15,8 +16,6 @@ const fetchState = async (displayName, id) => {
     return { ok: false, error: err.message }
   }
 }
-
-const wait = (time) => new Promise(resolve => setTimeout(resolve, time));
 
 const createSetTitleLabel = (el, room) => ({ loading = false, live = false, error }) => {
   let description = '';
